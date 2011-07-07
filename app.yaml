@@ -1,0 +1,11 @@
+application: kbindr
+version: 0-1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /.*
+  script: bindr.py
+
+builtins:
+- datastore_admin: on
