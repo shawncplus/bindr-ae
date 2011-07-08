@@ -117,6 +117,19 @@ class GetMapping(webapp.RequestHandler):
 		else:
 			self.response.out.write('login_required')
 
+class DelMapping(webapp.RequestHandler):
+	def post(self):
+		if getCurrentUser():
+			bind = self.request.get('bind')
+			sites = self.request.get('sites')
+			result = Mapping.gql("WHERE user = :1 AND bind = :2 AND sites = :3", getCurrentUser(), bind, sites)
+			for mapping in result:
+				mapping.delete()
+
+			self.response.out.write('success')
+		else:
+			self.response.out.write('login_required')
+
 
 class Mappings(webapp.RequestHandler):
 	def post(self):
@@ -139,7 +152,7 @@ class MainApp(webapp.RequestHandler):
 			self.redirect('http://github.com/shawncplus/bindr')
 
 application = webapp.WSGIApplication(
-		[('/', MainApp), ('/fetch', GetMapping), ('/add', Mappings)],
+		[('/', MainApp), ('/fetch', GetMapping), ('/add', Mappings), ('/delete', DelMapping)],
 		debug=True)
 
 def main():
